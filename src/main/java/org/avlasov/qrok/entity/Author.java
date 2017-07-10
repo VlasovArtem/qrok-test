@@ -1,6 +1,8 @@
 package org.avlasov.qrok.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.avlasov.qrok.enums.Sex;
+import org.avlasov.qrok.view.book.BookView;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,6 +28,7 @@ public class Author implements Serializable {
     @JoinTable(name = "AUTHOR_BOOK",
             joinColumns = @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "BOOK_ID", nullable = false, updatable = false))
+    @JsonView({BookView.HideAuthorsBooks.class})
     private List<Book> books;
     @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
