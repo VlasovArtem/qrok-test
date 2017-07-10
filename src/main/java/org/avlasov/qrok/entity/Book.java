@@ -1,6 +1,8 @@
 package org.avlasov.qrok.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.avlasov.qrok.enums.Genre;
+import org.avlasov.qrok.view.author.AuthorView;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,6 +28,7 @@ public class Book implements Serializable {
     @Enumerated(EnumType.STRING)
     private Genre genre;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books")
+    @JsonView(AuthorView.HideBooksAuthors.class)
     private List<Author> authors;
 
     public Book() {
