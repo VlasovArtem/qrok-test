@@ -80,4 +80,28 @@ public class Book implements Serializable {
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+
+        Book book = (Book) o;
+
+        if (id != book.id) return false;
+        if (title != null ? !title.equals(book.title) : book.title != null) return false;
+        if (ISBN != null ? !ISBN.equals(book.ISBN) : book.ISBN != null) return false;
+        if (genre != book.genre) return false;
+        return authors != null ? authors.equals(book.authors) : book.authors == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (ISBN != null ? ISBN.hashCode() : 0);
+        result = 31 * result + (genre != null ? genre.hashCode() : 0);
+        result = 31 * result + (authors != null ? authors.hashCode() : 0);
+        return result;
+    }
 }

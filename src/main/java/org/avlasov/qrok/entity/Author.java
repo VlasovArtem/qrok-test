@@ -102,4 +102,32 @@ public class Author implements Serializable {
     public void setRewards(List<Reward> rewards) {
         this.rewards = rewards;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Author)) return false;
+
+        Author author = (Author) o;
+
+        if (id != author.id) return false;
+        if (firstName != null ? !firstName.equals(author.firstName) : author.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(author.lastName) : author.lastName != null) return false;
+        if (sex != author.sex) return false;
+        if (books != null ? !books.equals(author.books) : author.books != null) return false;
+        if (birthDate != null ? !birthDate.equals(author.birthDate) : author.birthDate != null) return false;
+        return rewards != null ? rewards.equals(author.rewards) : author.rewards == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (sex != null ? sex.hashCode() : 0);
+        result = 31 * result + (books != null ? books.hashCode() : 0);
+        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
+        result = 31 * result + (rewards != null ? rewards.hashCode() : 0);
+        return result;
+    }
 }

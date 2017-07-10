@@ -45,4 +45,24 @@ public class Reward implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Reward)) return false;
+
+        Reward reward = (Reward) o;
+
+        if (id != reward.id) return false;
+        if (year != reward.year) return false;
+        return title != null ? title.equals(reward.title) : reward.title == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + year;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        return result;
+    }
 }
