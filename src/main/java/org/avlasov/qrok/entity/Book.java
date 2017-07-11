@@ -1,8 +1,8 @@
 package org.avlasov.qrok.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.avlasov.qrok.enums.Genre;
-import org.avlasov.qrok.view.author.AuthorView;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,18 +17,20 @@ import java.util.List;
         @UniqueConstraint(columnNames = "ISBN"),
         @UniqueConstraint(columnNames = "TITLE")
 })
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BOOK_ID", unique = true, nullable = false)
     private int id;
+    @Column(name = "TITLE")
     private String title;
-    @Column(length = 13)
+    @Column(length = 13, name = "ISBN")
     private String ISBN;
     @Enumerated(EnumType.STRING)
     private Genre genre;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books")
-    @JsonView(AuthorView.HideBooksAuthors.class)
+//    @JsonSerialize(using = BookAuthorsSerializer.class)
     private List<Author> authors;
 
     public Book() {

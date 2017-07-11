@@ -1,8 +1,8 @@
 package org.avlasov.qrok.entity;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.avlasov.qrok.enums.Sex;
-import org.avlasov.qrok.view.book.BookView;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +13,7 @@ import java.util.List;
  * Created by artemvlasov on 10/07/2017.
  */
 @Entity
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Author implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,6 @@ public class Author implements Serializable {
     @JoinTable(name = "AUTHOR_BOOK",
             joinColumns = @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "BOOK_ID", nullable = false, updatable = false))
-    @JsonView({BookView.HideAuthorsBooks.class})
     private List<Book> books;
     @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
