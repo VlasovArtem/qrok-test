@@ -4,7 +4,7 @@ import org.avlasov.qrok.entity.Author;
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
 import org.avlasov.qrok.repository.BookRepository;
-import org.avlasov.qrok.repository.config.ServiceConfig;
+import org.avlasov.qrok.config.ServiceConfig;
 import org.avlasov.qrok.utils.BookUpdater;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;

@@ -2,7 +2,7 @@ package org.avlasov.qrok.repository;
 
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
-import org.avlasov.qrok.repository.config.DatabaseConfig;
+import org.avlasov.qrok.config.DatabaseConfig;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;
 import org.junit.runner.RunWith;
