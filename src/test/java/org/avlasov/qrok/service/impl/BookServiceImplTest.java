@@ -4,7 +4,6 @@ import org.avlasov.qrok.entity.Author;
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
 import org.avlasov.qrok.repository.BookRepository;
-import org.avlasov.qrok.config.ServiceConfig;
 import org.avlasov.qrok.utils.BookUpdater;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.when;
  * Created by artemvlasov on 11/07/2017.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = ServiceConfig.class)
+@ContextConfiguration(classes = BookServiceImpl.class)
 public class BookServiceImplTest {
 
     @MockBean
