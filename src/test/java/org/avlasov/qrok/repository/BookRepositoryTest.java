@@ -25,8 +25,6 @@ import static org.junit.Assert.*;
 /**
  * Created by artemvlasov on 11/07/2017.
  */
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @ContextConfiguration(classes = DatabaseConfig.class)
