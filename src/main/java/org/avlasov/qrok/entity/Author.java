@@ -16,7 +16,7 @@ import java.util.List;
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Author implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "AUTHOR_ID", unique = true, nullable = false)
     private int id;
     @Column(name = "FIRST_NAME")
