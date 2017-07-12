@@ -11,7 +11,9 @@ import org.avlasov.qrok.service.BookService;
 import org.avlasov.qrok.utils.BookUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,25 +58,35 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public Optional<Book> add(Book book) {
         if (Objects.nonNull(book)) {
             if (Objects.isNull(book.getAuthors()) || book.getAuthors().isEmpty()) {
                 LOGGER.warn("Book authors is not found");
                 throw new BookSaveException("Book authors is not found");
             } else {
-                book.setAuthors(book.getAuthors()
+                bookRepository.save(book);
+                List<Author> authors = book.getAuthors()
                         .stream()
                         .map(Author::getId)
                         .map(authorRepository::findOne)
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
-                return Optional.ofNullable(bookRepository.saveAndFlush(book));
+                        .collect(Collectors.toList());
+                authors.forEach(author -> {
+                    List<Book> books = Optional.ofNullable(author.getBooks())
+                            .orElseGet(ArrayList::new);
+                    books.add(book);
+                    author.setBooks(books);
+                });
+                book.setAuthors(authors);
+                return Optional.of(book);
             }
         }
         return Optional.empty();
     }
 
     @Override
+    @Transactional
     public Optional<Book> update(int id, Book source) {
         if (Objects.nonNull(source)) {
             Book target = bookRepository.findOne(id);
