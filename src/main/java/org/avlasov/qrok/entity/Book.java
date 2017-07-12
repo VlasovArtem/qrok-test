@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 /**
  * Created by artemvlasov on 10/07/2017.
  */
@@ -29,8 +31,7 @@ public class Book implements Serializable {
     private String ISBN;
     @Enumerated(EnumType.STRING)
     private Genre genre;
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books")
-//    @JsonSerialize(using = BookAuthorsSerializer.class)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books", cascade = {DETACH, PERSIST, REFRESH})
     private List<Author> authors;
 
     public Book() {

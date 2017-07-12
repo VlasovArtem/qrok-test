@@ -9,6 +9,10 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REFRESH;
+
 /**
  * Created by artemvlasov on 10/07/2017.
  */
@@ -25,10 +29,10 @@ public class Author implements Serializable {
     private String lastName;
     @Enumerated(EnumType.STRING)
     private Sex sex;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {DETACH, PERSIST, REFRESH})
     @JoinTable(name = "AUTHOR_BOOK",
-            joinColumns = @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "BOOK_ID", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "AUTHOR_ID", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "BOOK_ID", nullable = false))
     private List<Book> books;
     @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
