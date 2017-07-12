@@ -1,10 +1,14 @@
 package org.avlasov.qrok.service.impl;
 
 import org.avlasov.qrok.entity.Author;
+import org.avlasov.qrok.entity.AuthorShort;
+import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.entity.Reward;
 import org.avlasov.qrok.repository.AuthorRepository;
 import org.avlasov.qrok.service.AuthorService;
 import org.avlasov.qrok.utils.AuthorUpdater;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,16 +18,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by artemvlasov on 11/07/2017.
@@ -147,23 +147,40 @@ public class AuthorServiceImplTest {
         Author author = new Author();
         author.setRewards(Collections.singletonList(new Reward()));
         when(authorRepository.findOne(anyInt())).thenReturn(author);
-        List<Reward> authorRewards = authorService.findAuthorRewards(10);
-        assertThat(authorRewards, IsCollectionWithSize.hasSize(author.getRewards().size()));
+        Optional<List<Reward>> authorRewards = authorService.findAuthorRewards(10);
+        assertTrue(authorRewards.isPresent());
+        assertThat(authorRewards.get(), IsCollectionWithSize.hasSize(author.getRewards().size()));
     }
 
     @Test
     public void findAuthorRewards_WithExistingIdAndEmptyRewards_ReturnEmptyCollection() throws Exception {
         when(authorRepository.exists(anyInt())).thenReturn(true);
         when(authorRepository.findOne(anyInt())).thenReturn(new Author());
-        List<Reward> authorRewards = authorService.findAuthorRewards(10);
-        assertThat(authorRewards, IsCollectionWithSize.hasSize(0));
+        Optional<List<Reward>> authorRewards = authorService.findAuthorRewards(10);
+        assertTrue(authorRewards.isPresent());
+        assertThat(authorRewards.get(), IsCollectionWithSize.hasSize(0));
     }
 
     @Test
     public void findAuthorRewards_WithNotExisting_ReturnEmptyCollection() throws Exception {
         when(authorRepository.exists(anyInt())).thenReturn(false);
-        List<Reward> authorRewards = authorService.findAuthorRewards(10);
-        assertThat(authorRewards, IsCollectionWithSize.hasSize(0));
+        Optional<List<Reward>> authorRewards = authorService.findAuthorRewards(10);
+        assertFalse(authorRewards.isPresent());
+    }
+
+    @Test
+    public void findAuthorShort_WithExistingId_ReturnAuthorShortOptional() throws Exception {
+        when(authorRepository.exists(anyInt())).thenReturn(true);
+        when(authorRepository.findOne(anyInt())).thenReturn(new Author("First Name", "Last Name", null, Collections.singletonList(new Book("Title", null, null, null)), LocalDate.of(1987, 5, 11), null));
+        Optional<AuthorShort> authorShort = authorService.findAuthorShort(10);
+        assertTrue(authorShort.isPresent());
+        assertThat(authorShort.get(), new AuthorShortMatcher("First Name", "Last Name", LocalDate.now().getYear() - 1987, Collections.singletonList("Title")));
+    }
+
+    @Test
+    public void findAuthorShort_WithNotExistingId_ReturnAuthorShortOptional() throws Exception {
+        when(authorRepository.exists(anyInt())).thenReturn(false);
+        assertFalse(authorService.findAuthorRewards(10).isPresent());
     }
 
     @Test
@@ -177,6 +194,45 @@ public class AuthorServiceImplTest {
     public void delete_WithNotExistingId_ReturnFalse() throws Exception {
         when(authorRepository.exists(anyInt())).thenReturn(false);
         assertFalse(authorService.delete(10));
+    }
+
+    private class AuthorShortMatcher extends BaseMatcher<AuthorShort> {
+
+        private String firstName;
+        private String lastName;
+        private int age;
+        private List<String> books;
+
+        public AuthorShortMatcher(String firstName, String lastName, int age, List<String> books) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.age = age;
+            this.books = books;
+        }
+
+        @Override
+        public boolean matches(Object item) {
+            AuthorShort authorShort = (AuthorShort) item;
+            return checkString(authorShort.getFirstName(), firstName) &&
+                    checkString(authorShort.getLastName(), lastName) &&
+                    authorShort.getAge() == age &&
+                    validateBooks(authorShort.getBooks());
+        }
+
+        private boolean checkString(String objectValue, String requiredValue) {
+            return  (Objects.isNull(objectValue) && Objects.isNull(requiredValue)) ||
+                    Objects.toString(objectValue, "").equals(requiredValue);
+        }
+
+        private boolean validateBooks(List<String> books) {
+            return (Objects.isNull(books) && Objects.isNull(this.books))
+                    || Optional.ofNullable(books).orElseGet(Collections::emptyList).stream().allMatch(this.books::contains);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+
+        }
     }
 
 }
