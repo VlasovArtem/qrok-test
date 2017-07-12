@@ -18,6 +18,7 @@ public interface AuthorService {
     Optional<Author> add(Author author);
     Optional<Author> update(int id, Author source);
     Optional<Author> addAuthorReward(int id, Reward reward);
+    List<Reward> findAuthorRewards(int id);
     boolean delete(int id);
 
 }

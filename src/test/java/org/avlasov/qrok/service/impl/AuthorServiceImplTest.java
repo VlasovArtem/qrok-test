@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -138,6 +139,31 @@ public class AuthorServiceImplTest {
         when(authorRepository.exists(anyInt())).thenReturn(false);
         Optional<Author> authorOptional = authorService.addAuthorReward(10, new Reward());
         assertFalse(authorOptional.isPresent());
+    }
+
+    @Test
+    public void findAuthorRewards_WithExistingIdAndExistingRewards_ReturnRewardCollection() throws Exception {
+        when(authorRepository.exists(anyInt())).thenReturn(true);
+        Author author = new Author();
+        author.setRewards(Collections.singletonList(new Reward()));
+        when(authorRepository.findOne(anyInt())).thenReturn(author);
+        List<Reward> authorRewards = authorService.findAuthorRewards(10);
+        assertThat(authorRewards, IsCollectionWithSize.hasSize(author.getRewards().size()));
+    }
+
+    @Test
+    public void findAuthorRewards_WithExistingIdAndEmptyRewards_ReturnEmptyCollection() throws Exception {
+        when(authorRepository.exists(anyInt())).thenReturn(true);
+        when(authorRepository.findOne(anyInt())).thenReturn(new Author());
+        List<Reward> authorRewards = authorService.findAuthorRewards(10);
+        assertThat(authorRewards, IsCollectionWithSize.hasSize(0));
+    }
+
+    @Test
+    public void findAuthorRewards_WithNotExisting_ReturnEmptyCollection() throws Exception {
+        when(authorRepository.exists(anyInt())).thenReturn(false);
+        List<Reward> authorRewards = authorService.findAuthorRewards(10);
+        assertThat(authorRewards, IsCollectionWithSize.hasSize(0));
     }
 
     @Test

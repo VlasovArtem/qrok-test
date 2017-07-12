@@ -10,10 +10,7 @@ import org.avlasov.qrok.utils.AuthorUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by artemvlasov on 11/07/2017.
@@ -80,6 +77,18 @@ public class AuthorServiceImpl implements AuthorService {
             LOGGER.warn("Author is not found by id {} or reward is null");
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Reward> findAuthorRewards(int id) {
+        if (authorRepository.exists(id)) {
+            Author author = authorRepository.findOne(id);
+            return Optional.ofNullable(author.getRewards())
+                    .orElseGet(Collections::emptyList);
+        } else {
+            LOGGER.warn("Author with id {} is not found.", id);
+        }
+        return Collections.emptyList();
     }
 
     @Override
