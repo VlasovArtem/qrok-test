@@ -113,7 +113,8 @@ public class BookServiceImplTest {
     public void add_WithNullAuthors_ExceptionThrown() throws Exception {
         Book bookObject = getBookObject();
         bookObject.setId(10);
-        bookService.add(getBookObject());
+        bookObject.setAuthors(null);
+        bookService.add(bookObject);
     }
 
     @Test(expected = BookServiceException.class)
@@ -121,7 +122,7 @@ public class BookServiceImplTest {
         Book bookObject = getBookObject();
         bookObject.setId(10);
         bookObject.setAuthors(Collections.emptyList());
-        bookService.add(getBookObject());
+        bookService.add(bookObject);
     }
 
     @Test
@@ -143,7 +144,7 @@ public class BookServiceImplTest {
     }
 
     public Book getBookObject() {
-        return getBookObject("Title", "56565", Genre.ACTION, null);
+        return getBookObject("Title", "56565", Genre.ACTION, Collections.singletonList(new Author()));
     }
 
     private Book getBookObject(String title, String ISBN, Genre genre, List<Author> authors) {

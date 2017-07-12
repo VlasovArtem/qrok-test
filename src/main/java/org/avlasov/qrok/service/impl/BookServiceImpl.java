@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -66,19 +63,7 @@ public class BookServiceImpl implements BookService {
                 throw new BookSaveException("Book authors is not found");
             } else {
                 bookRepository.save(book);
-                List<Author> authors = book.getAuthors()
-                        .stream()
-                        .map(Author::getId)
-                        .map(authorRepository::findOne)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-                authors.forEach(author -> {
-                    List<Book> books = Optional.ofNullable(author.getBooks())
-                            .orElseGet(ArrayList::new);
-                    books.add(book);
-                    author.setBooks(books);
-                });
-                book.setAuthors(authors);
+                book.setAuthors(updateBookAuthors(book));
                 return Optional.of(book);
             }
         }
@@ -91,7 +76,11 @@ public class BookServiceImpl implements BookService {
         if (Objects.nonNull(source)) {
             Book target = bookRepository.findOne(id);
             if (Objects.nonNull(target)) {
-                return Optional.of(bookUpdater.update(target, source));
+                Book updatedBook = bookUpdater.update(target, source);
+                if (Objects.nonNull(source.getAuthors()) && !source.getAuthors().isEmpty() && !target.getAuthors().equals(source.getAuthors())) {
+                    updateBookAuthors(source);
+                }
+                return Optional.of(updatedBook);
             } else {
                 LOGGER.warn("Book with tracking number {} is not found.", id);
             }
@@ -99,5 +88,21 @@ public class BookServiceImpl implements BookService {
             LOGGER.warn("Source book should not be null");
         }
         return Optional.empty();
+    }
+
+    private List<Author> updateBookAuthors(Book book) {
+        List<Author> authors = book.getAuthors()
+                .stream()
+                .map(Author::getId)
+                .map(authorRepository::findOne)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        authors.forEach(author -> {
+            List<Book> books = Optional.ofNullable(author.getBooks())
+                    .orElseGet(ArrayList::new);
+            books.add(book);
+            author.setBooks(books);
+        });
+        return authors;
     }
 }
