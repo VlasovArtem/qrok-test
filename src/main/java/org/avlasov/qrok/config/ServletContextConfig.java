@@ -1,6 +1,7 @@
 package org.avlasov.qrok.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -26,6 +27,7 @@ public class ServletContextConfig extends WebMvcConfigurerAdapter {
                 .json()
                 .defaultViewInclusion(true)
                 .autoDetectFields(true)
+                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .build();
         converters.add(new MappingJackson2HttpMessageConverter(mapper));
     }
