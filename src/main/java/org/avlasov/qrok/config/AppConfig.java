@@ -5,6 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Created by artemvlasov on 10/07/2017.
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @ComponentScan(basePackages = "org.avlasov.qrok")
 @EnableJpaRepositories(basePackages = "org.avlasov.qrok.repository")
+@EnableTransactionManagement
 @Import(DevDataSourceConfig.class)
 public class AppConfig {
 
