@@ -3,6 +3,8 @@ package org.avlasov.qrok.service.impl;
 import org.avlasov.qrok.entity.Author;
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
+import org.avlasov.qrok.exception.BookServiceException;
+import org.avlasov.qrok.repository.AuthorRepository;
 import org.avlasov.qrok.repository.BookRepository;
 import org.avlasov.qrok.utils.BookUpdater;
 import org.hamcrest.collection.IsCollectionWithSize;
@@ -20,7 +22,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,6 +36,8 @@ public class BookServiceImplTest {
     private BookRepository bookRepository;
     @MockBean
     private BookUpdater bookUpdater;
+    @MockBean
+    private AuthorRepository authorRepository;
     @Autowired
     private BookServiceImpl bookService;
 
@@ -89,8 +93,12 @@ public class BookServiceImplTest {
     public void add_WithValidData_ReturnBookOptional() throws Exception {
         Book bookObject = getBookObject();
         bookObject.setId(10);
+        Author author = new Author();
+        author.setId(1);
+        bookObject.setAuthors(Collections.singletonList(author));
+        when(authorRepository.findOne(anyInt())).thenReturn(author);
         when(bookRepository.save(Mockito.any(Book.class))).thenReturn(bookObject);
-        Optional<Book> book = bookService.add(getBookObject());
+        Optional<Book> book = bookService.add(bookObject);
         assertTrue(book.isPresent());
         assertThat(book.get().getId(), is(bookObject.getId()));
     }
@@ -101,30 +109,19 @@ public class BookServiceImplTest {
         assertFalse(book.isPresent());
     }
 
-    @Test
-    public void deleteById_WithExistingId_ReturnTrue() throws Exception {
-        doNothing().when(bookRepository).delete(Mockito.anyInt());
-        when(bookRepository.exists(Mockito.anyInt())).thenReturn(true);
-        assertTrue(bookService.deleteById(10));
+    @Test(expected = BookServiceException.class)
+    public void add_WithNullAuthors_ExceptionThrown() throws Exception {
+        Book bookObject = getBookObject();
+        bookObject.setId(10);
+        bookService.add(getBookObject());
     }
 
-    @Test
-    public void deleteById_WithNotExistingId_ReturnTrue() throws Exception {
-        when(bookRepository.exists(Mockito.anyInt())).thenReturn(false);
-        assertFalse(bookService.deleteById(10));
-    }
-
-
-    @Test
-    public void deleteByTitle_WithExistingTitle_DoNothing() throws Exception {
-        doNothing().when(bookRepository).deleteByTitle(Mockito.anyString());
-        bookService.deleteByTitle("title");
-    }
-
-    @Test
-    public void deleteByISBN_WithExistingISBN_DoNothing() throws Exception {
-        doNothing().when(bookRepository).deleteByTitle(Mockito.anyString());
-        bookService.deleteByISBN("isbn");
+    @Test(expected = BookServiceException.class)
+    public void add_WithEmptyAuthors_ExceptionThrown() throws Exception {
+        Book bookObject = getBookObject();
+        bookObject.setId(10);
+        bookObject.setAuthors(Collections.emptyList());
+        bookService.add(getBookObject());
     }
 
     @Test

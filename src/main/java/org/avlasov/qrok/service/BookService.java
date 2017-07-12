@@ -15,9 +15,6 @@ public interface BookService {
     Optional<Book> findByTitle(String title);
     Optional<Book> findByISBN(String isbn);
     Optional<Book> add(Book book);
-    boolean deleteById(int id);
-    void deleteByTitle(String title);
-    void deleteByISBN(String isbn);
     Optional<Book> update(int id, Book source);
 
 }
