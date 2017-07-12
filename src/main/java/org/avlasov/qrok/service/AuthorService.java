@@ -1,6 +1,7 @@
 package org.avlasov.qrok.service;
 
 import org.avlasov.qrok.entity.Author;
+import org.avlasov.qrok.entity.AuthorShort;
 import org.avlasov.qrok.entity.Reward;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public interface AuthorService {
     Optional<Author> add(Author author);
     Optional<Author> update(int id, Author source);
     Optional<Author> addAuthorReward(int id, Reward reward);
-    List<Reward> findAuthorRewards(int id);
+    Optional<List<Reward>> findAuthorRewards(int id);
+    Optional<AuthorShort> findAuthorShort(int id);
     boolean delete(int id);
 
 }

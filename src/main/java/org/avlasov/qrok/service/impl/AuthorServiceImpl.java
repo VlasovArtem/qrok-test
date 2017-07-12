@@ -3,6 +3,8 @@ package org.avlasov.qrok.service.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.avlasov.qrok.entity.Author;
+import org.avlasov.qrok.entity.AuthorShort;
+import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.entity.Reward;
 import org.avlasov.qrok.repository.AuthorRepository;
 import org.avlasov.qrok.service.AuthorService;
@@ -10,7 +12,9 @@ import org.avlasov.qrok.utils.AuthorUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by artemvlasov on 11/07/2017.
@@ -80,15 +84,26 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Reward> findAuthorRewards(int id) {
+    public Optional<List<Reward>> findAuthorRewards(int id) {
         if (authorRepository.exists(id)) {
             Author author = authorRepository.findOne(id);
-            return Optional.ofNullable(author.getRewards())
-                    .orElseGet(Collections::emptyList);
+            return Optional.of(Optional.ofNullable(author.getRewards())
+                    .orElseGet(Collections::emptyList));
         } else {
             LOGGER.warn("Author with id {} is not found.", id);
         }
-        return Collections.emptyList();
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<AuthorShort> findAuthorShort(int id) {
+        if (authorRepository.exists(id)) {
+            Author author = authorRepository.findOne(id);
+            return Optional.of(new AuthorShort(author.getFirstName(), author.getLastName(), getAuthorAge(author), getListOfBooks(author)));
+        } else {
+            LOGGER.warn("Author with id {} is not found.", id);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -99,4 +114,23 @@ public class AuthorServiceImpl implements AuthorService {
         }
         return false;
     }
+
+    private int getAuthorAge(Author author) {
+        if (Objects.nonNull(author) && Objects.nonNull(author.getBirthDate())) {
+            LocalDate now = LocalDate.now();
+            return now.getYear() - author.getBirthDate().getYear();
+        }
+        return 0;
+    }
+
+    private List<String> getListOfBooks(Author author) {
+        return Optional
+                .ofNullable(author)
+                .map(Author::getBooks)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(Book::getTitle)
+                .collect(Collectors.toList());
+    }
+
 }
