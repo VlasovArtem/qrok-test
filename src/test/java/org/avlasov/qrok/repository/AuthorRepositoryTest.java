@@ -23,8 +23,8 @@ import static org.junit.Assert.*;
 @DataJpaTest
 @ContextConfiguration(classes = DatabaseConfig.class)
 @SqlGroup(value = {
-        @Sql("/scripts/author/drop-data.sql"),
-        @Sql("/scripts/author/data.sql")
+        @Sql("/scripts/drop-data.sql"),
+        @Sql("/scripts/data.sql")
 })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AuthorRepositoryTest {

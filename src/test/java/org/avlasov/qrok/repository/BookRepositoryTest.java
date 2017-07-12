@@ -1,8 +1,9 @@
 package org.avlasov.qrok.repository;
 
+import org.avlasov.qrok.config.DatabaseConfig;
+import org.avlasov.qrok.entity.Author;
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
-import org.avlasov.qrok.config.DatabaseConfig;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +16,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
@@ -29,14 +32,16 @@ import static org.junit.Assert.*;
 @DataJpaTest
 @ContextConfiguration(classes = DatabaseConfig.class)
 @SqlGroup(value = {
-        @Sql("/scripts/book/drop-data.sql"),
-        @Sql("/scripts/book/data.sql")
+        @Sql("/scripts/drop-data.sql"),
+        @Sql("/scripts/data.sql")
 })
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class BookRepositoryTest {
 
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Test
     public void findOne_WithExistingId_ReturnBook() throws Exception {
@@ -132,10 +137,13 @@ public class BookRepositoryTest {
 
     @Test
     public void add_WithValidBook_ReturnSavedBook() throws Exception {
-        Book book = new Book("New Title", "562929", Genre.ADVENTURE, null);
+        Book book = new Book("New Title", "562929", Genre.ADVENTURE, Collections.singletonList(authorRepository.findOne(1)));
         Book save = bookRepository.save(book);
         bookRepository.flush();
         assertThat(save.getId(), not(0));
+        Optional<Author> first = bookRepository.findOne(save.getId()).getAuthors().stream().findFirst();
+        assertTrue(first.isPresent());
+        assertThat(first.get().getId(), is(1));
     }
 
 }
