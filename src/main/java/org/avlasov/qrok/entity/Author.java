@@ -9,10 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.REFRESH;
-
 /**
  * Created by artemvlasov on 10/07/2017.
  */
@@ -20,7 +16,7 @@ import static javax.persistence.CascadeType.REFRESH;
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Author implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AUTHOR_ID", unique = true, nullable = false)
     private int id;
     @Column(name = "FIRST_NAME")
@@ -29,7 +25,7 @@ public class Author implements Serializable {
     private String lastName;
     @Enumerated(EnumType.STRING)
     private Sex sex;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {DETACH, PERSIST, REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "AUTHOR_BOOK",
             joinColumns = @JoinColumn(name = "AUTHOR_ID", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "BOOK_ID", nullable = false))

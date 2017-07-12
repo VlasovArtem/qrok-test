@@ -8,8 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-import static javax.persistence.CascadeType.*;
-
 /**
  * Created by artemvlasov on 10/07/2017.
  */
@@ -22,7 +20,7 @@ import static javax.persistence.CascadeType.*;
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BOOK_ID", unique = true, nullable = false)
     private int id;
     @Column(name = "TITLE")
@@ -31,7 +29,7 @@ public class Book implements Serializable {
     private String ISBN;
     @Enumerated(EnumType.STRING)
     private Genre genre;
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books", cascade = {DETACH, PERSIST, REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "books", cascade = CascadeType.MERGE)
     private List<Author> authors;
 
     public Book() {

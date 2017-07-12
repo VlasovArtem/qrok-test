@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity
 public class Reward implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REWARD_ID", unique = true, nullable = false)
     private int id;
     private int year;
