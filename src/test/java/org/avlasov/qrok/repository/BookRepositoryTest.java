@@ -4,13 +4,11 @@ import org.avlasov.qrok.config.DatabaseConfig;
 import org.avlasov.qrok.entity.Author;
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
-import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
@@ -20,9 +18,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -91,48 +87,6 @@ public class BookRepositoryTest {
     public void findByISBN_WithNullISBN_ReturnEmptyOptional() throws Exception {
         Optional<Book> book = bookRepository.findByISBN(null);
         assertFalse(book.isPresent());
-    }
-
-    @Test
-    public void delete_WithExistingId_RemoveData() throws Exception {
-        int booksSize = bookRepository.findAll().size();
-        bookRepository.delete(1);
-        assertThat(bookRepository.findAll(), IsCollectionWithSize.hasSize(booksSize - 1));
-    }
-
-    @Test(expected = EmptyResultDataAccessException.class)
-    public void delete_WithNotExistingId_RemoveData() throws Exception {
-        int booksSize = bookRepository.findAll().size();
-        bookRepository.delete(999);
-        assertThat(bookRepository.findAll(), IsCollectionWithSize.hasSize(booksSize));
-    }
-
-    @Test
-    public void deleteByTitle_WithExistingBookTitle_RemoveData() throws Exception {
-        int booksSize = bookRepository.findAll().size();
-        bookRepository.deleteByTitle("Before the Law");
-        assertThat(bookRepository.findAll(), IsCollectionWithSize.hasSize(booksSize - 1));
-    }
-
-    @Test
-    public void deleteByTitle_WithNotExistingBookTitle_RemoveData() throws Exception {
-        int booksSize = bookRepository.findAll().size();
-        bookRepository.findByTitle("not exits");
-        assertThat(bookRepository.findAll(), IsCollectionWithSize.hasSize(booksSize));
-    }
-
-    @Test
-    public void deleteByISBN_WithExistingISBN_RemoveData() throws Exception {
-        int booksSize = bookRepository.findAll().size();
-        bookRepository.deleteByISBN("9788360979426");
-        assertThat(bookRepository.findAll(), IsCollectionWithSize.hasSize(booksSize - 1));
-    }
-
-    @Test
-    public void deleteByISBN_WithNotExistingISBN_RemoveData() throws Exception {
-        int booksSize = bookRepository.findAll().size();
-        bookRepository.deleteByTitle("not exists");
-        assertThat(bookRepository.findAll(), IsCollectionWithSize.hasSize(booksSize));
     }
 
     @Test
