@@ -1,7 +1,6 @@
 package org.avlasov.qrok.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.avlasov.qrok.config.ControllerConfig;
 import org.avlasov.qrok.entity.Book;
 import org.avlasov.qrok.enums.Genre;
 import org.avlasov.qrok.service.BookService;
@@ -20,9 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = ControllerConfig.class)
+@ContextConfiguration(classes = BookController.class)
 public class BookControllerTest {
 
     @MockBean
@@ -126,7 +123,7 @@ public class BookControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsBytes(getBookObject())))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("\"Book was not saved.\""));
+                .andExpect(content().string("Book was not saved."));
     }
 
     @Test
@@ -146,7 +143,7 @@ public class BookControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsBytes(getBookObject())))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("\"New book data is null or book id is not found in the database\""));
+                .andExpect(content().string("New book data is null or book id is not found in the database"));
     }
 
     @Test
