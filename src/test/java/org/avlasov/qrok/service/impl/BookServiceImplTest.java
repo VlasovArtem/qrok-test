@@ -97,7 +97,7 @@ public class BookServiceImplTest {
         author.setId(1);
         bookObject.setAuthors(Collections.singletonList(author));
         when(authorRepository.findOne(anyInt())).thenReturn(author);
-        when(bookRepository.save(Mockito.any(Book.class))).thenReturn(bookObject);
+        when(bookRepository.saveAndFlush(Mockito.any(Book.class))).thenReturn(bookObject);
         Optional<Book> book = bookService.add(bookObject);
         assertTrue(book.isPresent());
         assertThat(book.get().getId(), is(bookObject.getId()));
