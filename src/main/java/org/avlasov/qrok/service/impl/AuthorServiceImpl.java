@@ -11,6 +11,7 @@ import org.avlasov.qrok.service.AuthorService;
 import org.avlasov.qrok.utils.AuthorUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -58,6 +59,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public Optional<Author> update(int id, Author source) {
         if (Objects.nonNull(source) && authorRepository.exists(id)) {
             return Optional.of(authorUpdater.update(authorRepository.findOne(id), source));
@@ -68,6 +70,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public Optional<Author> addAuthorReward(int id, Reward reward) {
         if (Objects.nonNull(reward) && authorRepository.exists(id)) {
             Author author = authorRepository.findOne(id);
@@ -75,7 +78,6 @@ public class AuthorServiceImpl implements AuthorService {
                     .orElseGet(ArrayList::new);
             rewards.add(reward);
             author.setRewards(rewards);
-            authorRepository.flush();
             return Optional.of(author);
         } else {
             LOGGER.warn("Author is not found by id {} or reward is null");
