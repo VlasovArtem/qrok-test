@@ -32,7 +32,7 @@ public class Author implements Serializable {
     private List<Book> books;
     @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "REWARD_ID", referencedColumnName = "AUTHOR_ID")
     private List<Reward> rewards;
 
