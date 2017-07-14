@@ -3,35 +3,35 @@
 * gradle build
 * gradle run
 ## Book API
-1. /book/all - Get all books
+1. **GET** /book/all - Get all books
 ~~~
 curl -X GET \
   http://localhost:8080/book/all \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-2. /book/info/{book_id} - Get book by id
+2. **GET** /book/info/{book_id} - Get book by id
 ~~~
 curl -X GET \
   http://localhost:8080/book/info/1 \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-3. /book/info/title/{book_title} - Get Book by title
+3. **GET** /book/info/title/{book_title} - Get Book by title
 ~~~
 curl -X GET \
   http://localhost:8080/book/info/title/The%20Catcher%20in%20the%20Rye \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-4. /book/info/isbn/{book_isbn} - Get Book by ISBN
+4. **GET** /book/info/isbn/{book_isbn} - Get Book by ISBN
 ~~~
 curl -X GET \
   http://localhost:8080/book/info/isbn/9780230035287 \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-5. /book/add - Add new book
+5. **POST** /book/add - Add new book
 ~~~
 curl -X POST \
   http://localhost:8080/book/add \
@@ -49,7 +49,7 @@ curl -X POST \
     "isbn": "9783257211191"
 }'
 ~~~
-6. /book/update/{book_id} - Update book
+6. **PUT** /book/update/{book_id} - Update book
 ~~~
 curl -X PUT \
   http://localhost:8080/book/update/5 \
@@ -61,35 +61,35 @@ curl -X PUT \
 }'
 ~~~
 ## Author API
-1. /author/all - Get All authors
+1. **GET** /author/all - Get All authors
 ~~~
 curl -X GET \
   http://localhost:8080/author/all \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-2. /author/info/{author_id} - Get Author by id
+2. **GET** /author/info/{author_id} - Get Author by id
 ~~~
 curl -X GET \
   http://localhost:8080/author/info/1 \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-3. /author/info/firstName/{firstName} - Get Author by firstName
+3. **GET** /author/info/firstName/{firstName} - Get Author by firstName
 ~~~
 curl -X GET \
   http://localhost:8080/author/info/firstName/Franz \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-4. /author/info/lastName/{lastName} - Get Author by lastName
+4. **GET** /author/info/lastName/{lastName} - Get Author by lastName
 ~~~
 curl -X GET \
   http://localhost:8080/author/info/lastName/Christie \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-5. /author/add - Add Author
+5. **POST** /author/add - Add Author
 ~~~
 curl -X POST \
   http://localhost:8080/author/add \
@@ -103,7 +103,7 @@ curl -X POST \
     "birthDate": "1890-09-15"
 }'
 ~~~
-6. /author/update/{author_id} - update author
+6. **PUT** /author/update/{author_id} - update author
 ~~~
 curl -X PUT \
   http://localhost:8080/author/update/5 \
@@ -114,7 +114,7 @@ curl -X PUT \
 	"firstName": "New"
 }'
 ~~~
-7. /author/add/{author_id}/reward - Add Author Reward
+7. **POST** /author/add/{author_id}/reward - Add Author Reward
 ~~~
 curl -X POST \
   http://localhost:8080/author/add/4/reward \
@@ -126,14 +126,14 @@ curl -X POST \
 	"title": "New reward"
 }'
 ~~~
-8. /author/info/{author_id}/rewards - Get author rewards
+8. **GET** /author/info/{author_id}/rewards - Get author rewards
 ~~~
 curl -X GET \
   http://localhost:8080/author/info/1/rewards \
   -H 'accept: application/json' \
   -H 'authorization: Basic cXJvazpxcm9rLXBhc3N3b3Jk'
 ~~~
-9. /author/info/short/{author_id} - get author short info
+9. **GET** /author/info/short/{author_id} - get author short info
 ~~~
 curl -X GET \
   http://localhost:8080/author/info/short/1 \
@@ -151,3 +151,4 @@ Problems, that was faced with:
 6. Entities with annotations @ManyToMany could only deleted from the object with mappedBy attribute
 7. If data need to be updated you should save data in repository or set @Transactional on the method or class. Do not forget to set cascade attribute.
 8. Transactional configuration is excessively (add required cascade type for mapping annotation @ManyToMany or @OneToMany and add save method)
+9. AuthorShort should be moved to the model package (its not an entity). 
